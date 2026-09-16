@@ -75,10 +75,9 @@ rank = {}
         m = freemen.pop()
         
         # If the man has proposed to everyone he will be unmatched
-        w = pref[m][prefptr[m]]
-        prefptr[m] += 1
-        
-            
+        if prefptr[m] >= len(pref[m]):
+            continue
+          
         # get the next free woman
         w = pref[m][prefptr[m]]
         prefptr[m] += 1
