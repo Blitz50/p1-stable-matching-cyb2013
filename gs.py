@@ -16,7 +16,7 @@ def gs(men, women, pref, excluded):
     ## build the rank dictionary
     rank={}
     for w in women:
-        rank[w] = {}
+        rank[w] = 
         i = 1
         for m in pref[w]:
             rank[w][m]=i
