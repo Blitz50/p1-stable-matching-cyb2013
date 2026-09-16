@@ -16,7 +16,7 @@ def gs(men, women, pref, excluded):
     ## build the rank dictionary
     rank={}
     for w in women:
-        rank[w] = 
+        rank[w] = {}
         i = 1
         for m in pref[w]:
             rank[w][m]=i
@@ -55,7 +55,7 @@ def gs_block(men, women, pref, blocked):
             blocked (list of (man,woman) tuples that are unacceptable matches)
     Output: dictionary of stable matches
     """
-rank={}
+rank = {}
     for w in women:
         rank[w] = {}
         i = 1
@@ -75,8 +75,9 @@ rank={}
         m = freemen.pop()
         
         # If the man has proposed to everyone he will be unmatched
-        if prefptr[m] >= len(pref[m]):
-            continue
+        w = pref[m][prefptr[m]]
+        prefptr[m] += 1
+        
             
         # get the next free woman
         w = pref[m][prefptr[m]]
