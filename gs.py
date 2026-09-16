@@ -3,7 +3,7 @@
 # Homework 1 Starter Code
 # CYB 2013
 
-def gs(men, women, pref, excluded):
+def gs(men, women, pref):
     """
     Gale-shapley algorithm, modified to exclude unacceptable matches
     Inputs: men (list of men's names)
