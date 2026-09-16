@@ -1,9 +1,9 @@
-# Your name goes here
+# Jeffrey
 # Python implementation of stable matching problem
 # Homework 1 Starter Code
 # CYB 2013
 
-def gs(men, women, pref):
+def gs(men, women, pref, excluded):
     """
     Gale-shapley algorithm, modified to exclude unacceptable matches
     Inputs: men (list of men's names)
@@ -55,6 +55,49 @@ def gs_block(men, women, pref, blocked):
             blocked (list of (man,woman) tuples that are unacceptable matches)
     Output: dictionary of stable matches
     """
+rank={}
+    for w in women:
+        rank[w] = {}
+        i = 1
+        for m in pref[w]:
+            rank[w][m]=i
+            i+=1
+    # create a "pointer" to the next woman to propose
+    prefptr = {}
+    for m in men:
+        prefptr[m] = 0
+
+    freemen = set(men)    #initially all men and women are free
+    S = {}           #build dictionary to store engagements 
+
+    #run the algorithm
+    while freemen:
+        m = freemen.pop()
+        
+        # If the man has proposed to everyone he will be unmatched
+        if prefptr[m] >= len(pref[m]):
+            continue
+            
+        # get the next free woman
+        w = pref[m][prefptr[m]]
+        prefptr[m] += 1
+        
+        # Check if the pariing is blocked
+        if (m, w) in blocked:
+            freemen.add(m)
+            continue
+            
+        if w not in S: 
+            S[w] = m
+        else:
+            mprime = S[w]
+            if rank[w][m] < rank[w][mprime]:
+                S[w] = m
+                freemen.add(mprime)
+            else:
+                freemen.add(m)
+                
+    return S
     return "test"
 
 def gs_tie(men, women, preftie):
@@ -64,7 +107,56 @@ def gs_tie(men, women, preftie):
             women (list of women's names)
             pref (dictionary of preferences mapping names to list of sets of preferred names in sorted order)
     Output: dictionary of stable matches
+
     """
+
+    # Flatten the list of sets into a standard list. If a man is indifferent 
+    # between two women, the order he proposes to them doesn't matter for stability.
+    women_rank = {}
+    for w in women:
+        women_rank[w] = {}
+        i = 1
+        for tie_group in preftie[w]:
+            for m in tie_group:
+                women_rank[w][m] = i
+            i += 1
+
+    # 2. Preprocess Men's Preferences
+    men_flat_pref = {}
+    for m in men:
+        men_flat_pref[m] = []
+        for tie_group in preftie[m]:
+            men_flat_pref[m].extend(list(tie_group))
+
+    # points to next woman the man will propose to
+    prefptr = {}
+    for m in men:
+        prefptr[m] = 0
+
+    freemen = set(men)    
+    S = {}                
+
+    # run the algorithm
+    while freemen:
+        m = freemen.pop()
+        
+        if prefptr[m] >= len(men_flat_pref[m]):
+            continue
+            
+        w = men_flat_pref[m][prefptr[m]]
+        prefptr[m] += 1
+            
+        if w not in S: 
+            S[w] = m
+        else:
+            mprime = S[w]
+            if women_rank[w][m] < women_rank[w][mprime]:
+                S[w] = m
+                freemen.add(mprime)
+            else:
+                freemen.add(m)
+                
+    return S
     return "test"
 
 if __name__=="__main__":
